@@ -63,17 +63,22 @@ function photoCurrentInject(A, tfinish)
   echo "time:"  {time}
   while (time <= tfinish)
     time = {getstat -time}
-    float Iphoto1 = (1-E^(-time/tau1))
+    float Iphoto1 = (32/33)*(1-E**(-time/tau1))
     echo "Iphoto1:" {Iphoto1}
     float Iphoto2Exp = (-(time-b)/tau2)
     echo "Iphoto2Exp" {Iphoto2Exp}
-    float Ievalue = E^Iphoto2Exp
-    echo "Ievalue:" + Ievalue
+    float Ievalue = E**Iphoto2Exp
+    echo "Ievalue:"  {Ievalue}
     float Iphoto2 = (1/(1+Ievalue))
     echo "Iphoto2:" {Iphoto2}
-    float Iphoto3 = (1-E^(-time/tau3))
+    float Iphoto3 = (1-E**(-time/tau3))/33
     echo "Iphoto3:" {Iphoto3}
-    Iphoto = Idark + A*( Iphoto1 - Iphoto2 + Iphoto3)
+    float Isum = Iphoto1 - Iphoto2 + Iphoto3
+
+    Iphoto = Idark + A*( Isum )
+  /*  if(Isum < 0 )
+      Iphoto = Idark
+    end*/
     echo "time:"  {time} " Iphoto:" {Iphoto}
     setfield /cell/soma inject {Iphoto}
     step
@@ -105,8 +110,8 @@ function make_Vmgraph
 end
 
 function make_Iphotograph
-  float vmax = 7e-9
-  float vmin = -40e-12
+  float vmax = 0
+  float vmin = -8e-11
   create xform /input [610,50,350,350]
   create xlabel /input/label -hgeom 10% -label "Photocurrent input"
   create xgraph /input/current -hgeom 90% -title "Photocurrent input"
