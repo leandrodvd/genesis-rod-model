@@ -1,5 +1,5 @@
 float   PI = 3.14159
-
+float E = 2.71828
 int EXPONENTIAL =   1
 int SIGMOID     =   2
 int LINOID      =   3
